@@ -1,5 +1,6 @@
 $branchName = [Environment]::GetEnvironmentVariable("Build_SourceBranch")
-
+$name = [Environment]::GetEnvironmentVariable("name")
+$type = [Environment]::GetEnvironmentVariable("type")
 Write-Host "Branch name: $branchName"
 Write-Host "vars name value: $name"
 Write-Host "vars type value: $type"
