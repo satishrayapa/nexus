@@ -8,7 +8,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-2019'
 
 steps:
 - task: Maven@3
@@ -21,3 +21,9 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+- task: PowerShell@2
+    displayName: 'Determine the name of this stack that the Pipeline is excuting for.'
+    inputs:
+      targetType: 'filePath'    
+      filePath: 'deployment\ConfigureStackName.ps1'
+      errorActionPreference: 'stop'
