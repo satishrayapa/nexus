@@ -10,20 +10,23 @@ trigger:
 pool:
   vmImage: 'windows-2019'
 
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
-- task: PowerShell@2
-    displayName: 'Determine the name of this stack that the Pipeline is excuting for.'
+jobs:
+- job: PrepareEnvironmentJob
+  steps:
+
+  - task: Maven@3
     inputs:
-      targetType: 'filePath'    
-      filePath: 'deployment\ConfigureStackName.ps1'
-      errorActionPreference: 'stop'
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'package'
+  - task: PowerShell@2
+      displayName: 'Determine the name of this stack that the Pipeline is excuting for.'
+      inputs:
+        targetType: 'filePath'    
+        filePath: 'deployment\ConfigureStackName.ps1'
+        errorActionPreference: 'stop'
