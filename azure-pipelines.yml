@@ -34,15 +34,15 @@ jobs:
       filePath: 'deployment\ConfigureStackName.ps1'
       errorActionPreference: 'stop'
   
-    # - task: AzureResourceGroupDeployment@2
-    # displayName: 'Run Application GateWay ARM Deployment'
-    # inputs:
-    #   azureSubscription: '$(AzureSubscription)'
-    #   resourceGroupName: $(DeployResourceGroupName)
-    #   location: '$(DeployLocation)'
-    #   templateLocation: 'Linked artifact'
-    #   csmFile: localapgw.json
-    #   overrideParameters: >-
-    #       -publicIPAddressName 'publicaccessip' 
+  - task: AzureResourceGroupDeployment@2
+    displayName: 'Run Application GateWay ARM Deployment'
+    inputs:
+      azureSubscription: '$(AzureSubscription)'
+      resourceGroupName: $(DeployResourceGroupName)
+      location: '$(DeployLocation)'
+      templateLocation: 'Linked artifact'
+      csmFile: localapgw.json
+      overrideParameters: >-
+          -publicIPAddressName 'publicaccessip' 
 
-    #   deploymentOutputs: 'AGwayOutput'
+      deploymentOutputs: 'AGwayOutput'
