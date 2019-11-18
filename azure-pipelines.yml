@@ -43,6 +43,6 @@ jobs:
       templateLocation: 'Linked artifact'
       csmFile: myarm.json
       overrideParameters: >-
-          -publicIPAddressName 'publicaccessip' 
+          -publicIPAddressName $(name) 
 
       deploymentOutputs: 'AGwayOutput'
