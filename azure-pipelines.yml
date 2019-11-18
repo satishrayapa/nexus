@@ -41,7 +41,7 @@ jobs:
       resourceGroupName: $(DeployResourceGroupName)
       location: '$(DeployLocation)'
       templateLocation: 'Linked artifact'
-      csmFile: localapgw.json
+      csmFile: deployment\localapgw.json
       overrideParameters: >-
           -publicIPAddressName 'publicaccessip' 
 
