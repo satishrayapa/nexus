@@ -1,0 +1,210 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "stackName": {
+            "type": "String"
+        },
+        "subnetName": {
+            "type": "string"
+        },
+        "virtualNetworkId": {
+            "type": "string"
+        },
+        "osDiskType": {
+            "type": "string"
+        },
+        "virtualMachineSize": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "string"
+        },
+        "adminPassword": {
+            "type": "secureString"
+        },
+        "location": {
+            "type": "String"
+        },
+        "count": {
+            "type": "int"
+        },
+        "tagApplicationAssetInsightId": {
+            "type": "String"
+        },
+        "tagEnvironmentType": {
+            "type": "String"
+        },
+        "tagFinancialIdentifier": {
+            "type": "String"
+        },
+        "tagResourceOwner": {
+            "type": "String"
+        }
+    },
+    "variables": {
+        "tags": {
+            "tr-application-asset-insight-id": "[parameters('tagApplicationAssetInsightId')]",
+            "tr-environment-type": "[parameters('tagEnvironmentType')]",
+            "tr-financial-identifier": "[parameters('tagFinancialIdentifier')]",
+            "tr-resource-owner": "[parameters('tagResourceOwner')]",
+            "gov-stack-name": "[parameters('stackName')]"
+        },
+        "vmName": "[concat(substring(parameters('stackName'),0, 9),'-vm')]",
+        "networkInterfaceName": "[concat(parameters('stackName'),'-nic')]",
+        "subnetRef": "[concat(parameters('virtualNetworkId'), '/subnets/', parameters('subnetName'))]"
+    },
+    "resources": [
+        {
+            "name": "[concat(variables('networkInterfaceName'), copyIndex())]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2019-07-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[concat(parameters('stackName'),'-ipconfig', copyIndex())]",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                ]
+            },
+            "tags": "[variables('tags')]",
+            "copy": {
+                "name": "niccopy",
+                "count": "[parameters('count')]"
+            }
+        },
+        {
+            "name": "[concat(variables('vmName'), copyIndex())]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-03-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "niccopy"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('virtualMachineSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "name": "[concat(replace(variables('vmName'),'-','_') , copyIndex(),'_OsDisk_1')]",
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[parameters('osDiskType')]"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2019-Datacenter",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('networkInterfaceName'), copyIndex()))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[concat(variables('vmName'), copyIndex())]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+                        "provisionVmAgent": true
+                    },
+                    "allowExtensionOperations": true
+                }
+            },
+            "tags": "[variables('tags')]",
+            "copy": {
+                "name": "vmcopy",
+                "count": "[parameters('count')]"
+            }
+        },
+        {
+            "name": "[concat('microsoft.antimalware-windows', copyIndex())]",
+            "apiVersion": "2015-01-01",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "https://gallery.azure.com/artifact/20161101/microsoft.antimalware-windows-arm.1.0.2/Artifacts/MainTemplate.json"
+                },
+                "parameters": {
+                    "vmName": {
+                        "value": "[concat(variables('vmName'), copyIndex())]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "RealtimeProtectionEnabled": {
+                        "value": "true"
+                    },
+                    "ScheduledScanSettingsIsEnabled": {
+                        "value": "false"
+                    },
+                    "ScheduledScanSettingsScanType": {
+                        "value": "Quick"
+                    },
+                    "ScheduledScanSettingsDay": {
+                        "value": "7"
+                    },
+                    "ScheduledScanSettingsTime": {
+                        "value": "120"
+                    }
+                }
+            },
+            "dependsOn": [
+                "vmcopy"
+            ],
+            "copy": {
+                "name": "antimalwarecopy",
+                "count": "[parameters('count')]"
+            }
+        },
+        {
+            "apiVersion": "2016-05-15",
+            "type": "microsoft.devtestlab/schedules",
+            "name": "[concat('shutdown-computevm-', variables('vmName'), copyIndex())]",
+            "location": "[parameters('location')]",
+            "tags": "[variables('tags')]",
+            "dependsOn": [
+                "vmcopy"
+            ],
+            "properties": {
+                "status": "Enabled",
+                "taskType": "ComputeVmShutdownTask",
+                "dailyRecurrence": {
+                    "time": "1900"
+                },
+                "timeZoneId": "Central Standard Time",
+                "notificationSettings": {
+                    "status": "Disabled",
+                    "timeInMinutes": 15
+                },
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), copyIndex()))]"
+            },
+            "copy": {
+                "name": "shutdowncmcopy",
+                "count": "[parameters('count')]"
+            }
+        }
+    ],
+    "outputs": {
+        "vmName": {
+            "type": "string",
+            "value": "[variables('vmName')]"
+        }
+    }
+}
