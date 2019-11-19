@@ -48,6 +48,7 @@ jobs:
       deploymentOutputs: 'AGwayOutput'
   - task: AzureResourceGroupDeployment@2
     #condition: and(succeeded(), ne(variables['PrepCicd.DeployWorkload'], 'NULL'))
+    #thanks
     displayName: 'Deploy Aumentum Agent ARM Deployment'
     inputs:
       azureSubscription: '$(AzureSubscription)'
