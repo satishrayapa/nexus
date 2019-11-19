@@ -46,20 +46,20 @@ jobs:
           -publicIPAddressName $(name) 
 
       deploymentOutputs: 'AGwayOutput'
-  - task: AzureResourceGroupDeployment@2
-    #condition: and(succeeded(), ne(variables['PrepCicd.DeployWorkload'], 'NULL'))
-    #thanks hello
-    displayName: 'Deploy Aumentum Agent ARM Deployment'
-    inputs:
-      azureSubscription: '$(AzureSubscription)'
-      resourceGroupName: $(DeployResourceGroupName)
-      location: '$(DeployLocation)'
-      templateLocation: 'Linked artifact'
-      csmFile: 'create-azure-vm.json'
-      overrideParameters: >-
-          -stackName $(DeployStackName)
-          -subnetName '$(SubNet)'
-          -virtualNetworkId $(Netid)
-          -location $(DeployLocation)
+  # - task: AzureResourceGroupDeployment@2
+  #   #condition: and(succeeded(), ne(variables['PrepCicd.DeployWorkload'], 'NULL'))
+  #   #thanks hello
+  #   displayName: 'Deploy Aumentum Agent ARM Deployment'
+  #   inputs:
+  #     azureSubscription: '$(AzureSubscription)'
+  #     resourceGroupName: $(DeployResourceGroupName)
+  #     location: '$(DeployLocation)'
+  #     templateLocation: 'Linked artifact'
+  #     csmFile: 'create-azure-vm.json'
+  #     overrideParameters: >-
+  #         -stackName $(DeployStackName)
+  #         -subnetName '$(SubNet)'
+  #         -virtualNetworkId $(Netid)
+  #         -location $(DeployLocation)
 
-      deploymentOutputs: 'ArmOutput'
+  #     deploymentOutputs: 'ArmOutput'
