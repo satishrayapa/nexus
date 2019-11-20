@@ -10,46 +10,33 @@
         },
         "virtualNetworkId": {
             "type": "string"
+            
         },
         "osDiskType": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "StandardSSD_LRS"
         },
         "virtualMachineSize": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "Standard_A2_v2"
         },
         "adminUsername": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "satish"
         },
         "adminPassword": {
-            "type": "secureString"
+            "type": "secureString",
+            "defaultValue": "Satish@19899"
         },
         "location": {
             "type": "String"
         },
         "count": {
-            "type": "int"
-        },
-        "tagApplicationAssetInsightId": {
-            "type": "String"
-        },
-        "tagEnvironmentType": {
-            "type": "String"
-        },
-        "tagFinancialIdentifier": {
-            "type": "String"
-        },
-        "tagResourceOwner": {
-            "type": "String"
+            "type": "int",
+            "defaultValue": 2
         }
     },
     "variables": {
-        "tags": {
-            "tr-application-asset-insight-id": "[parameters('tagApplicationAssetInsightId')]",
-            "tr-environment-type": "[parameters('tagEnvironmentType')]",
-            "tr-financial-identifier": "[parameters('tagFinancialIdentifier')]",
-            "tr-resource-owner": "[parameters('tagResourceOwner')]",
-            "gov-stack-name": "[parameters('stackName')]"
-        },
         "vmName": "[concat(substring(parameters('stackName'),0, 9),'-vm')]",
         "networkInterfaceName": "[concat(parameters('stackName'),'-nic')]",
         "subnetRef": "[concat(parameters('virtualNetworkId'), '/subnets/', parameters('subnetName'))]"
@@ -75,7 +62,6 @@
                     }
                 ]
             },
-            "tags": "[variables('tags')]",
             "copy": {
                 "name": "niccopy",
                 "count": "[parameters('count')]"
@@ -126,7 +112,6 @@
                     "allowExtensionOperations": true
                 }
             },
-            "tags": "[variables('tags')]",
             "copy": {
                 "name": "vmcopy",
                 "count": "[parameters('count')]"
@@ -178,7 +163,6 @@
             "type": "microsoft.devtestlab/schedules",
             "name": "[concat('shutdown-computevm-', variables('vmName'), copyIndex())]",
             "location": "[parameters('location')]",
-            "tags": "[variables('tags')]",
             "dependsOn": [
                 "vmcopy"
             ],
