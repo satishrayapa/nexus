@@ -39,7 +39,8 @@
     "variables": {
         "vmName": "[concat(substring(parameters('stackName'),0, 9),'-vm')]",
         "networkInterfaceName": "[concat(parameters('stackName'),'-nic')]",
-        "subnetRef": "[concat(parameters('virtualNetworkId'), '/subnets/', parameters('subnetName'))]"
+        "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkId'), parameters('subnetName'))]"
+        
     },
     "resources": [
         {
