@@ -48,8 +48,6 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2019-07-01",
             "location": "[parameters('location')]",
-            "dependsOn": [
-            ],
             "properties": {
                 "ipConfigurations": [
                     {
