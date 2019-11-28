@@ -1,0 +1,239 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "sku": {
+            "type": "string",
+            "defaultValue" : "S1",
+            "metadata": {
+              "description": "The SKU of App Service Plan, by default is Standard S1"
+            }
+        },
+        "count": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "number of nic and vm."
+            }
+        },
+
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_A2_v2",
+            "metadata": {
+                "description": "Size of the virtual machine."
+            }
+        },
+        "windowsOSVersion": {
+            "type": "string",
+            "defaultValue": "2016-Datacenter",
+            "allowedValues": [
+                "2008-R2-SP1",
+                "2012-Datacenter",
+                "2012-R2-Datacenter",
+                "2016-Nano-Server",
+                "2016-Datacenter-with-Containers",
+                "2016-Datacenter",
+                "2019-Datacenter"
+                ],
+            "metadata": {
+                "description": "The Windows version for the VM. This will pick a fully patched image of this given Windows version."
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "satish",
+            "metadata": {
+                "description": "Username for the Virtual Machine."
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "Satish@19899",
+            "metadata": {
+                "description": "Password for the Virtual Machine."
+            }
+        },
+        "envname": {
+            "type": "string",
+            "defaultValue": "Production",
+            "metadata": {
+                "description": "name of env."
+            }
+        },
+        "appplan": {
+            "type": "string",
+            "defaultValue": "aumappplan",
+            "metadata": {
+                "description": "name of appplan."
+            }
+        },
+        "appname": {
+            "type": "string",
+            "defaultValue": "aumappsvc",
+            "metadata": {
+                "description": "name of appsvc."
+            }
+        },
+        "nic": {
+            "type": "string",
+            "defaultValue": "dbnic",
+            "metadata": {
+                "description": "name of nic."
+            }
+        },
+        "ipconfig": {
+            "type": "string",
+            "defaultValue": "tripconfig",
+            "metadata": {
+                "description": "name of ipconfig."
+            }
+        },
+        "VNetname": {
+            "type": "string",
+            "defaultValue": "TrVNet",
+            "metadata": {
+                "description": "name of virtualnetname."
+            }
+        },
+        "subnet": {
+            "type": "string",
+            "defaultValue": "TrSubNet1",
+            "metadata": {
+                "description": "name of subnetname."
+            }
+        },
+        "instancename": {
+            "type": "string",
+            "defaultValue": "dbvm",
+            "metadata": {
+                "description": "name of vmname."
+            }
+        }
+        
+    },
+    "variables": {
+        "tag": {
+          "tr:environment-type": "[parameters('envname')]"
+        },
+        "appServicePlanName": "[parameters('appplan')]",
+        "appServiceName":"[parameters('appname')]",
+        "nicName": "[parameters('nic')]",
+        "ipconfigname":"[parameters('ipconfig')]",
+        "virtualNetworkName": "[parameters('VNetname')]",
+        "subnetName": "[parameters('subnet')]",
+        "vmName": "[parameters('instancename')]",
+        "subnetRef": "[resourceId('df3588cd-396f-4c36-8da8-3b78a798963c','Demo','Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Network/networkInterfaces",
+        "apiVersion": "2018-11-01",
+        "name": "[concat(variables('nicName'), copyIndex())]",
+        "location": "[parameters('location')]",
+        "tags": "[variables('tag')]",
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "[concat(variables('ipconfigname'), copyIndex())]",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "subnet": {
+                  "id": "[variables('subnetRef')]"
+                }
+              }
+            }
+          ]
+        },
+        "copy": {
+            "name": "niccopy",
+            "count": "[parameters('count')]"
+        }
+      },
+      {
+        "type": "Microsoft.Compute/virtualMachines",
+        "apiVersion": "2018-10-01",
+        "name": "[concat(variables('vmName'), copyIndex())]",
+        "location": "[parameters('location')]",
+        "tags": "[variables('tag')]",
+        "dependsOn": [
+          "niccopy"
+        ],
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[parameters('vmSize')]"
+          },
+          "osProfile": {
+            "computerName": "[concat(variables('vmName'), copyIndex())]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "MicrosoftWindowsServer",
+              "offer": "WindowsServer",
+              "sku": "[parameters('windowsOSVersion')]",
+              "version": "latest"
+            },
+            "osDisk": {
+              "createOption": "FromImage"
+            },
+            "dataDisks": [
+              {
+                "diskSizeGB": 40,
+                "lun": 0,
+                "createOption": "Empty"
+              }
+            ]
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), copyIndex()))]"
+              }
+            ]
+          }
+        },
+        "copy": {
+            "name": "vmcopy",
+            "count": "[parameters('count')]"
+        } 
+      },
+      {
+        "apiVersion": "2018-02-01",
+        "type": "Microsoft.Web/serverfarms",
+        "kind": "app",
+        "name": "[variables('appServicePlanName')]",
+        "location": "[parameters('location')]",
+        "properties": {},
+        "dependsOn": [],
+        "sku": {
+          "name": "[parameters('sku')]"
+        }
+      },
+      {
+        "apiVersion": "2018-11-01",
+        "type": "Microsoft.Web/sites",
+        "kind": "app",
+        "name": "[variables('appServiceName')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+        ]
+      }
+   
+     
+    ],
+    "outputs": {}
+}

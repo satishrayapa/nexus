@@ -63,3 +63,13 @@ jobs:
   #         -location $(DeployLocation)
 
   #     deploymentOutputs: 'ArmOutput'
+  - task: AzureResourceGroupDeployment@2
+    displayName: 'deploy 1 app service 3 DB VM'
+    inputs:
+      azureSubscription: '$(AzureSubscription)'
+      resourceGroupName: $(DeployResourceGroupName)
+      location: '$(DeployLocation)'
+      templateLocation: 'Linked artifact'
+      csmFile: arm.json
+      overrideParameters: >-
+          -publicIPAddressName $(name) 
