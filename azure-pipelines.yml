@@ -72,4 +72,4 @@ jobs:
       templateLocation: 'Linked artifact'
       csmFile: arm.json
       overrideParameters: >-
-          -publicIPAddressName $(name) 
+          -adminPassword "Satish@19899"
