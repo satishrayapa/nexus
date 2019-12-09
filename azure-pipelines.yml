@@ -63,13 +63,23 @@ jobs:
   #         -location $(DeployLocation)
 
   #     deploymentOutputs: 'ArmOutput'
-  - task: AzureResourceGroupDeployment@2
-    displayName: 'deploy 1 app service 3 DB VM'
-    inputs:
-      azureSubscription: '$(AzureSubscription)'
-      resourceGroupName: $(DeployResourceGroupName)
-      location: '$(DeployLocation)'
-      templateLocation: 'Linked artifact'
-      csmFile: arm.json
-      overrideParameters: >-
-          -adminPassword "Satish@19899"
+  # - task: AzureResourceGroupDeployment@2
+  #   displayName: 'deploy 1 app service 3 DB VM'
+  #   inputs:
+  #     azureSubscription: '$(AzureSubscription)'
+  #     resourceGroupName: $(DeployResourceGroupName)
+  #     location: '$(DeployLocation)'
+  #     templateLocation: 'Linked artifact'
+  #     csmFile: arm.json
+  #     overrideParameters: >-
+  #         -adminPassword "Satish@19899"
+    - task: AzureResourceGroupDeployment@2
+      displayName: 'deploy appsvc'
+      inputs:
+        azureSubscription: '$(AzureSubscription)'
+        resourceGroupName: $(DeployResourceGroupName)
+        location: '$(DeployLocation)'
+        templateLocation: 'Linked artifact'
+        csmFile: deployment/appsvc.json
+        overrideParameters: >-
+            -appplan "aryanappsvcplan"
