@@ -22,7 +22,8 @@
     "variables": {
 
         "location": "[parameters('location')]",
-        "appServicePlanName": "[parameters('appplan')]"
+        "appServicePlanName": "[parameters('appplan')]",
+        "app_insights_name": "aryanappinsights"
 
 
         
@@ -40,6 +41,16 @@
         }
         
         
+    },
+    {
+      "apiVersion": "2018-05-01-preview",
+      "name": "[variables('app_insights_name')]",
+      "type": "microsoft.insights/components",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ApplicationId": "[variables('app_insights_name')]",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      }
     }
    
      
