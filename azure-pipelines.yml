@@ -34,6 +34,7 @@ jobs:
       filePath: 'deployment\ConfigureStackName.ps1'
       errorActionPreference: 'stop'
   - task: PowerShell@2
+    name: aryan
     displayName: 'Determine the name of this stack that the Pipeline.'
     inputs:
       targetType: 'filePath'    
