@@ -8,4 +8,4 @@ $name = [Environment]::GetEnvironmentVariable("name")
 #$ResourceGroupName = [Environment]::GetEnvironmentVariable("name")
 #$con = [Environment]::GetEnvironmentVariable("Global_country")
 Write-Host "##vso[task.setvariable variable=city;isOutput=true]$name"
-Write-Host "$city"
+Write-Host "city name : $city"
