@@ -28,17 +28,18 @@ jobs:
   #     testResultsFiles: '**/surefire-reports/TEST-*.xml'
   #     goals: 'package'
   - task: PowerShell@2
+    name: aryan
     displayName: 'Determine the name of this stack that the Pipeline is excuting for.'
     inputs:
       targetType: 'filePath'    
       filePath: 'deployment\ConfigureStackName.ps1'
       errorActionPreference: 'stop'
   - task: PowerShell@2
-    name: aryan
     displayName: 'Determine the name of this stack that the Pipeline.'
     inputs:
       targetType: 'filePath'    
       filePath: 'deployment\Test.ps1'
+      arguments: '-VMName $(aryan.PipelineStackName)'
       errorActionPreference: 'stop'
   
   # - task: AzureResourceGroupDeployment@2
