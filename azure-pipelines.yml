@@ -28,6 +28,7 @@ jobs:
   #     testResultsFiles: '**/surefire-reports/TEST-*.xml'
   #     goals: 'package'
   - task: PowerShell@2
+    name: aryan
     displayName: 'Determine the name of this stack that the Pipeline is excuting for.'
     inputs:
       targetType: 'filePath'    
