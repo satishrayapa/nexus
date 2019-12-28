@@ -8,7 +8,8 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-2019'
+  name: SelfHostedAgent
+  #vmImage: 'windows-2019'
 
 variables:
   - group: testvars
@@ -29,7 +30,7 @@ jobs:
   #     goals: 'package'
   - task: PowerShell@2
     name: aryan
-    displayName: 'Determine the name of this stack that the Pipeline is excuting for.'
+    displayName: 'Determine the name of this stack that the Pipeline is excuting for'
     inputs:
       targetType: 'filePath'    
       filePath: 'deployment\ConfigureStackName.ps1'
