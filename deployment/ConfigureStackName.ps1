@@ -21,3 +21,4 @@ Write-Host "##vso[task.setvariable variable=PipelineStackName;isOutput=true]$sta
 #$namee = [Environment]::GetEnvironmentVariable("PipelineStackName")
 Write-Host "$stackName"
 Write-Host "$myname"
+write-host $(PipelineStackName)
