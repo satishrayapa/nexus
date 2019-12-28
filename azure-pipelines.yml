@@ -39,7 +39,7 @@ jobs:
     inputs:
       targetType: 'filePath'    
       filePath: 'deployment\Test.ps1'
-      arguments: '-VMName $(PipelineStackName)'
+      arguments: '-VMName $(aryan.PipelineStackName)'
       errorActionPreference: 'stop'
   
   # - task: AzureResourceGroupDeployment@2
