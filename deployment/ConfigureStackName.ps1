@@ -17,7 +17,7 @@ else {
 }
 
 $myname = [Environment]::GetEnvironmentVariable("name")
-Write-Host "##vso[task.setvariable variable=PipelineStackName;]$stackName"
+Write-Host "##vso[task.setvariable variable=PipelineStackName;isOutput=true]$stackName"
 #$namee = [Environment]::GetEnvironmentVariable("PipelineStackName")
 Write-Host "$stackName"
 Write-Host "$myname"
