@@ -13,8 +13,7 @@ pool:
 
 variables:
   - group: testvars
-  - name: village
-    value: rajupalem
+    village: rajupalem
 
 jobs:
 - job: PrepareEnvironmentJob
