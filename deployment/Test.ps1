@@ -7,7 +7,7 @@ param($VMName)
 $ResourceGroupName = [Environment]::GetEnvironmentVariable("ARYAN" +"_"+ "PIPELINESTACKNAME")
 #$con = [Environment]::GetEnvironmentVariable("Global_country")
 #Write-Host "##vso[task.setvariable variable=city;isOutput=true]$name"
-Write-Host $VMName
-Write-Host $ResourceGroupName
+#Write-Host $VMName
+#Write-Host $ResourceGroupName
 Write-Host $env:NAME
 
