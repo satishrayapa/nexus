@@ -10,4 +10,5 @@ $ResourceGroupName = [Environment]::GetEnvironmentVariable("ARYAN" +"_"+ "PIPELI
 #Write-Host $VMName
 #Write-Host $ResourceGroupName
 Write-Host $env:NAME
+Write-Host $env:MYSEC
 
