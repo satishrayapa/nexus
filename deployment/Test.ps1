@@ -9,4 +9,5 @@ $ResourceGroupName = [Environment]::GetEnvironmentVariable("ARYAN" +"_"+ "PIPELI
 #Write-Host "##vso[task.setvariable variable=city;isOutput=true]$name"
 Write-Host $VMName
 Write-Host $ResourceGroupName
-Write-Host $VILLAGE
+Write-Host $env:NAME
+
