@@ -34,15 +34,14 @@ steps:
     includeRootFolder: false
     archiveType: 'zip'      
     archiveFile: '$(Build.ArtifactStagingDirectory)/sample.zip'
-"""
+
 - task: AzureFileCopy@3
   displayName: 'Copy Aumentum zip to storage'
   inputs:
     sourcePath: '$(Build.ArtifactStagingDirectory)/sample.zip'
-    azureSubscription: $(Global.AzureSubscription)
+    azureSubscription: 'df3588cd-396f-4c36-8da8-3b78a798963c'
     destination: azureBlob
     storage: $(StorageAccountName)
     containerName: 'build'
     blobPrefix: 'aumentum'
 
-"""
