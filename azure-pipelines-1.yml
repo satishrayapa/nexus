@@ -39,9 +39,9 @@ steps:
   displayName: 'Copy Aumentum zip to storage'
   inputs:
     sourcePath: '$(Build.ArtifactStagingDirectory)/sample.zip'
-    azureSubscription: 'df3588cd-396f-4c36-8da8-3b78a798963c'
+    azureSubscription: '$(Global.AzureSubscription)'
     destination: azureBlob
-    storage: $(StorageAccountName)
+    storage: '$(StorageAccountName)'
     containerName: 'build'
     blobPrefix: 'aumentum'
 
