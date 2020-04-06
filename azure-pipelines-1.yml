@@ -8,8 +8,8 @@ trigger:
 variables:
   - group: aryantest
 
-pool:
-  vmImage: 'myaryan'
+pool: myaryan
+   
 
 steps:
 - task: Maven@3
