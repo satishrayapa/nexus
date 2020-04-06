@@ -9,7 +9,7 @@ variables:
   - group: aryantest
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'newaryan'
 
 steps:
 - task: Maven@3
@@ -30,18 +30,18 @@ steps:
 - task: ArchiveFiles@2
   displayName: 'Zip Aumentum'    
   inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)\*'
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
     includeRootFolder: false
     archiveType: 'zip'      
     archiveFile: '$(Build.ArtifactStagingDirectory)/sample.zip'
 
-- task: AzureFileCopy@3
-  displayName: 'Copy Aumentum zip to storage'
-  inputs:
-    sourcePath: '$(Build.ArtifactStagingDirectory)/sample.zip'
-    azureSubscription: '$(Global.AzureSubscription)'
-    destination: azureBlob
-    storage: '$(StorageAccountName)'
-    containerName: 'build'
-    blobPrefix: 'aumentum'
+# - task: AzureFileCopy@3
+#   displayName: 'Copy Aumentum zip to storage'
+#   inputs:
+#     sourcePath: '$(Build.ArtifactStagingDirectory)/sample.zip'
+#     azureSubscription: '$(Global.AzureSubscription)'
+#     destination: azureBlob
+#     storage: '$(StorageAccountName)'
+#     containerName: 'build'
+#     blobPrefix: 'aumentum'
 
