@@ -9,7 +9,7 @@ variables:
   - group: aryantest
 
 pool:
-  vmImage: myaryan
+  vmImage: 'myaryan'
 
 steps:
 - task: Maven@3
